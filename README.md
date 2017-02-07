@@ -1,290 +1,275 @@
 # UNIX_Assignment
-
-#### how to open a program using a linus operating system
-xdg-open README.md
+Maize and teosinte data sets are first pulled from the fang\_et\_al\_genotypes.txt. They are then joined with snp\_position.txt and excess data is removed so that there is only SNP_ID, Chromosome, Position and genotype data is left. Each set is separated further by chromosome and sorted by position. All files named sorted\_maize* or sorted\_teosinte* are sorted by increasing snp position.All files named reverse\_sorted\_maize* or reverse\_sorted\_teosinte* are sorted in reverse order and all "?" in the file have been replaced with "-".
 
 
-
-
-
-#### find the number of columns in fang_et_al_genotypes.txt
+#### find the number of columns in fang\_et\_al_genotypes.txt
 awk -F "\t" '{print NF; exit}' fang*
-#### transpose fang_et_al_genotypes.txt
-awk -f transpose.awk fang_et_al_genotypes.txt > transposed_genotypes.txt
-####make sure that there is the same number of rows as there was columns
-cut -f 1 transposed_genotypes.txt | wc
-#### sort transposed_genotypes text file 
-sort -k1,1 transposed_genotypes.txt > sorted_transposed_genotypes.txt
-####check to see if snp_position.txt is sorted
-sort -c snp_position.txt
-#### sort the snp_position.txt file
-sort -k1,1 snp_position.txt > sorted_snp_position.txt
+#### find the number of rows in fang\_et\_al\_genotypes.txt
+cut -f 1 fang\_et\_al\_genotypes.txt| wc -l
+#### find out how many unique groups are within fang
+cut -f 3 fang\_et\_al\_genotypes.txt |sort| uniq -c
 
-####check to see if sort worked 
-sort -k1,1 -c sorted_snp_position.txt 
-##PROBLEM!! NOT SORTED!
-
-cut -f 1 sorted_transposed_genotypes.txt
-
-cut -f 1 snp_position.txt
-
-cut -f 1 sorted_snp_position.txt
-
-####join the sorted transposed genotypes data with sorted snp position text
-join -1 1 -2 1 sorted_transposed_genotypes.txt sorted_snp_position.txt > joined_genotype_snp.txt
-
-####cut the first column and see what it is spitting out. WHY IS THIS NOT THE SAME AS the sorted_snp_position.txt?
-cut -f 1 joined_genotype_snp.txt 
-
-
-####word count the lines for all the documents
-wc -l snp_position.txt snp_position_sorted.txt transposed_genotypes.txt sorted_transposed_genotypes.txt joined_genotype_snp.txt 
-
-
-
+##MAIZE
 
 ####
-grep 'ZMM' fang_et_al_genotypes.txt > maize_genotype.txt
-head -n 1 fang_et_al_genotypes.txt > header.txt
-cat header.txt maize_genotype.txt > header_maize_genotype.txt
+grep 'ZMM' fang\_et\_al\_genotypes.txt > maize_genotype.txt
+
+head -n 1 fang\_et\_al\_genotypes.txt > header.txt
+
+cat header.txt maize\_genotype.txt > header\_maize\_genotype.txt
+
 ####Transpose header+maize genotype file 
-awk -f transpose.awk header_maize_genotype.txt > transposed_header_maize_genotypes.txt
-cut -f 1 transposed_header_maize_genotypes.txt | wc
-cut -f 1 transposed_header_maize_genotypes.txt
+
+awk -f transpose.awk header\_maize\_genotype.txt > transposed\_header\_maize\_genotypes.txt
+
+cut -f 1 transposed\_header\_maize\_genotypes.txt | wc
+
+cut -f 1 transposed\_header\_maize\_genotypes.txt
+
 #### sort transposed_header_maize_genotypes text file 
 
-tail -n +4 transposed_header_maize_genotypes.txt| sort -k1,1 > sorted_transposed_header_maize_genotypes.txt
-cut -f 1 sorted_transposed_header_maize_genotypes.txt | wc
-cut -f 1 sorted_transposed_header_maize_genotypes.txt 
+tail -n +4 transposed\_header\_maize\_genotypes.txt| sort -k1,1 > sorted\_transposed\_header\_maize\_genotypes.txt
+
+cut -f 1 sorted\_transposed\_header\_maize\_genotypes.txt | wc
+
+cut -f 1 sorted\_transposed\_header\_maize\_genotypes.txt 
 
 ####check to see if snp_position.txt is sorted
-sort -c snp_position.txt
+sort -c snp\_position.txt
 
 #### sort the snp_position.txt file
-head -n 1 snp_position.txt > snp_header.txt
-tail -n +2 snp_position.txt | sort -k1,1 > sorted_snp_position.txt
-cut -f 1 sorted_snp_position.txt
+head -n 1 snp\_position.txt > snp\_header.txt
+
+tail -n +2 snp\_position.txt | sort -k1,1 > sorted\_snp_position.txt
+
+cut -f 1 sorted\_snp\_position.txt
 
 #### join sorted sip files and sorted transposed header+maize genotype data.
-join -t $'\t' -1 1 -2 1 sorted_snp_position.txt sorted_transposed_header_maize_genotypes.txt > joined_maize.txt
+join -t $'\t' -1 1 -2 1 sorted\_snp\_position.txt 
+sorted\_transposed\_header\_maize\_genotypes.txt > joined\_maize.txt
 
-###Add snp headers back
-cat snp_header.txt joined_maize.txt > joined_header_maize_genotype_snp.txt
-cat joined_header_maize_genotype_snp.txt| cut -f 1-16| head
+####Add snp headers back
+cat snp_header.txt joined\_maize.txt > joined\_header\_maize\_genotype\_snp.txt
+
+cat joined\_header\_maize\_genotype\_snp.txt| cut -f 1-16| head
 
 ####word count the lines for all the documents
-wc -l snp_position.txt sorted_snp_position.txt transposed_header_maize_genotypes.txt sorted_transposed_header_maize_genotypes.txt joined_genotype_snp.txt
+wc -l snp_position.txt sorted\_snp\_position.txt 
+
+transposed\_header\_maize\_genotypes.txt 
+
+sorted\_transposed\_header\_maize\_genotypes.txt joined\_genotype\_snp.txt
  
 #### check how many columns are in joined_maize.txt
- awk -F "\t" '{print NF; exit}' joined_maize.txt 
+awk -F "\t" '{print NF; exit}' joined\_maize.txt 
 
 ### Cut out unnecessary information
-cut -f 1,3,4,16- joined_header_maize_genotype_snp.txt | head | cut -f 1-10
+cut -f 1,3,4,16- joined\_header\_maize\_genotype\_snp.txt | head | cut -f 1-10
 
-cut -f 1,3,4,16- joined_header_maize_genotype_snp.txt > reordered_maize_genotype_snp.txt
+cut -f 1,3,4,16- joined\_header\_maize\_genotype\_snp.txt > reordered\_maize\_genotype\_snp.txt
 
 #### How many SNPs are on each maize chromosome
-cut -f 2 reordered_maize_genotype_snp.txt |sort -n | uniq -c
+cut -f 2 reordered\_maize\_genotype\_snp.txt |sort -n | uniq -c
 
-awk '$2 == 1' reordered_maize_genotype_snp.txt  > maize_chromosome_1.txt
+awk '$2 == 1' reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_1.txt
 
-cat maize_chromosome_1.txt|head
+cat maize\_chromosome\_1.txt|head
 
-cut -f 2 maize_chromosome_1.txt| sort| uniq -c
+cut -f 2 maize\_chromosome\_1.txt| sort| uniq -c
 
-awk '$2 == 2' reordered_maize_genotype_snp.txt  > maize_chromosome_2.txt
+awk '$2 == 2' reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_2.txt
 
-awk '$2 == 3' reordered_maize_genotype_snp.txt  > maize_chromosome_3.txt
+awk '$2 == 3' reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_3.txt
 
-awk '$2 == 4' reordered_maize_genotype_snp.txt  > maize_chromosome_4.txt
+awk '$2 == 4' reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_4.txt
 
-awk '$2 == 5’ reordered_maize_genotype_snp.txt  > maize_chromosome_5.txt
+awk '$2 == 5’ reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_5.txt
 
-awk '$2 == 6' reordered_maize_genotype_snp.txt  > maize_chromosome_6.txt
+awk '$2 == 6' reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_6.txt
 
-awk '$2 == 7’ reordered_maize_genotype_snp.txt  > maize_chromosome_7.txt
+awk '$2 == 7’ reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_7.txt
 
-awk '$2 == 8’ reordered_maize_genotype_snp.txt  > maize_chromosome_8.txt
+awk '$2 == 8’ reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_8.txt
 
-awk '$2 == 9’ reordered_maize_genotype_snp.txt  > maize_chromosome_9.txt
+awk '$2 == 9’ reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_9.txt
 
-awk '$2 == 10' reordered_maize_genotype_snp.txt  > maize_chromosome_10.txt
+awk '$2 == 10' reordered\_maize\_genotype\_snp.txt  > maize\_chromosome\_10.txt
 
-cut -f 2 maize_chromosome_10.txt| sort| uniq -c
+cut -f 2 maize\_chromosome\_10.txt| sort| uniq -c
 
 ### Increasing position sort of maize chromosome SNPs
 
-sort -k3,3n maize_chromosome_1.txt|head| cut -f 1-3
+sort -k3,3n maize\_chromosome\_1.txt|head| cut -f 1-3
 
-sort -k3,3n maize_chromosome_1.txt >sorted_maize_chromosome_1.txt
+sort -k3,3n maize\_chromosome\_1.txt >sorted\_maize\_chromosome\_1.txt
 
-cat sorted_maize_chromosome_1.txt|head |cut -f 1-6|column -t        
-sort -k3,3n maize_chromosome_2.txt > sorted_maize_chromosome_2.txt
+cat sorted\_maize\_chromosome\_1.txt|head |cut -f 1-6|column -t        
+sort -k3,3n maize\_chromosome\_2.txt > sorted\_maize\_chromosome\_2.txt
 
-sort -k3,3n maize_chromosome_3.txt > sorted_maize_chromosome_3.txt
+sort -k3,3n maize\_chromosome\_3.txt > sorted\_maize\_chromosome\_3.txt
 
-sort -k3,3n maize_chromosome_4.txt > sorted_maize_chromosome_4.txt
+sort -k3,3n maize\_chromosome\_4.txt > sorted\_maize\_chromosome_4.txt
 
-sort -k3,3n maize_chromosome_5.txt > sorted_maize_chromosome_5.txt
+sort -k3,3n maize\_chromosome\_5.txt > sorted\_maize\_chromosome\_5.txt
 
-sort -k3,3n maize_chromosome_6.txt > sorted_maize_chromosome_6.txt
+sort -k3,3n maize\_chromosome\_6.txt > sorted\_maize\_chromosome\_6.txt
 
-sort -k3,3n maize_chromosome_7.txt > sorted_maize_chromosome_7.txt
+sort -k3,3n maize\_chromosome\_7.txt > sorted\_maize\_chromosome\_7.txt
 
-sort -k3,3n maize_chromosome_8.txt > sorted_maize_chromosome_8.txt
+sort -k3,3n maize\_chromosome\_8.txt > sorted\_maize\_chromosome\_8.txt
 
-sort -k3,3n maize_chromosome_9.txt > sorted_maize_chromosome_9.txt
+sort -k3,3n maize\_chromosome\_9.txt > sorted\_maize\_chromosome\_9.txt
 
-sort -k3,3n maize_chromosome_10.txt > sorted_maize_chromosome_10.txt
+sort -k3,3n maize\_chromosome\_10.txt > sorted\_maize\_chromosome\_10.txt
 
 
 
 ###Decreasing position order and replace ‘?’ with ‘-‘
-sort -k3,3nr maize_chromosome_10.txt|head| cut -f 1-10
+sort -k3,3nr maize\_chromosome\_10.txt|head| cut -f 1-10
 
-sort -k3,3nr maize_chromosome_10.txt| sed 's/?/-/g'| head| cut -f 1-10
+sort -k3,3nr maize\_chromosome\_10.txt| sed 's/?/-/g'| head| cut -f 1-10
 
-sort -k3,3nr maize_chromosome_10.txt| sed ’s/?/-/g’> reverse_maize_chromosome_10.txt
+sort -k3,3nr maize\_chromosome\_10.txt| sed ’s/?/-/g’> reverse\_maize\_chromosome\_10.txt
 
-sort -k3,3nr maize_chromosome_9.txt| sed 's/?/-/g'> reverse_maize_chromosome_9.txt
+sort -k3,3nr maize\_chromosome\_9.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_9.txt
 
-sort -k3,3nr maize_chromosome_8.txt| sed 's/?/-/g'> reverse_maize_chromosome_8.txt
+sort -k3,3nr maize\_chromosome\_8.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_8.txt
 
-sort -k3,3nr maize_chromosome_7.txt| sed 's/?/-/g'> reverse_maize_chromosome_7.txt
+sort -k3,3nr maize\_chromosome\_7.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_7.txt
 
-sort -k3,3nr maize_chromosome_7.txt| sed 's/?/-/g'> reverse_maize_chromosome_6.txt
+sort -k3,3nr maize\_chromosome\_7.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_6.txt
 
-sort -k3,3nr maize_chromosome_6.txt| sed 's/?/-/g'> reverse_maize_chromosome_6.txt
+sort -k3,3nr maize\_chromosome\_6.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_6.txt
 
-sort -k3,3nr maize_chromosome_5.txt| sed 's/?/-/g'> reverse_maize_chromosome_5.txt
+sort -k3,3nr maize\_chromosome\_5.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_5.txt
 
-sort -k3,3nr maize_chromosome_4.txt| sed 's/?/-/g'> reverse_maize_chromosome_4.txt
+sort -k3,3nr maize\_chromosome\_4.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_4.txt
 
-sort -k3,3nr maize_chromosome_3.txt| sed 's/?/-/g'> reverse_maize_chromosome_3.txt
+sort -k3,3nr maize\_chromosome\_3.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_3.txt
 
-sort -k3,3nr maize_chromosome_2.txt| sed 's/?/-/g'> reverse_maize_chromosome_2.txt
+sort -k3,3nr maize\_chromosome\_2.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_2.txt
 
-sort -k3,3nr maize_chromosome_1.txt| sed 's/?/-/g'> reverse_maize_chromosome_1.txt
-
-
+sort -k3,3nr maize\_chromosome\_1.txt| sed 's/?/-/g'> reverse\_maize\_chromosome\_1.txt
 
 
 
-#TEOSINTE
+
+
+##TEOSINTE
 ####pull teosinte data out of the file
-grep 'ZMP' fang_et_al_genotypes.txt > teosinte_genotype.txt
+grep 'ZMP' fang\_et\_al\_genotypes.txt > teosinte\_genotype.txt
 
-cat header.txt teosinte_genotype.txt > header_teosinte_genotype.txt
+cat header.txt teosinte\_genotype.txt > header\_teosinte\_genotype.txt
 
 #### transpose teosinte file with its headers
 
-awk -f transpose.awk header_teosinte_genotype.txt > transposed_header_teosinte_genotypes.txt
+awk -f transpose.awk header\_teosinte\_genotype.txt > transposed\_header\_teosinte\_genotypes.txt
 
-cut -f 1 transposed_header_teosinte_genotypes.txt | wc
+cut -f 1 transposed\_header\_teosinte\_genotypes.txt | wc
 
-cut -f 1 transposed_header_teosinte_genotypes.txt
+cut -f 1 transposed\_header\_teosinte\_genotypes.txt
 
-tail -n +4 transposed_header_teosinte_genotypes.txt | sort -k1,1 > sorted_transposed_header_teosinte_genotypes.txt
+tail -n +4 transposed\_header\_teosinte\_genotypes.txt | sort -k1,1 > sorted\_transposed\_header\_teosinte\_genotypes.txt
 
 #### join sorted sip files and sorted transposed header+teosinte genotype data.
-join -t $'\t' -1 1 -2 1 sorted_snp_position.txt sorted_transposed_header_teosinte_genotypes.txt > joined_teosinte.txt
+join -t $'\t' -1 1 -2 1 sorted\_snp\_position.txt sorted\_transposed\_header\_teosinte\_genotypes.txt > joined\_teosinte.txt
 
 #### Add back the snap headers to joined teosinte file
-cat snp_header.txt joined_teosinte.txt > joined_header_teosinte_genotype_snp.txt
-cat joined_header_teosinte_genotype_snp.txt| cut -f 1-16| head
+cat snp\_header.txt joined\_teosinte.txt > joined\_header\_teosinte\_genotype\_snp.txt
+cat joined\_header\_teosinte\_genotype\_snp.txt| cut -f 1-16| head
 
 ####word count the lines for all the documents
-wc -l snp_position.txt sorted_snp_position.txt transposed_header_maize_genotypes.txt sorted_transposed_header_maize_genotypes.txt joined_genotype_snp.txt  transposed_header_teosinte_genotypes.txt sorted_transposed_header_teosinte_genotypes.txt joined_teosinte.txt
+wc -l snp\_position.txt sorted\_snp\_position.txt transposed\_header\_maize\_genotypes.txt sorted\_transposed\_header\_maize\_genotypes.txt joined\_genotype\_snp.txt  transposed\_header\_teosinte\_genotypes.txt sorted\_transposed\_header\_teosinte\_genotypes.txt joined\_teosinte.txt
 
 #### check to see how many columns are in joined teosinte text file
-awk -F "\t" '{print NF; exit}' joined_teosinte.txt 
+awk -F "\t" '{print NF; exit}' joined\_teosinte.txt 
 
 ### Cut out unnecessary information
-cut -f 1,3,4,16- joined_header_teosinte_genotype_snp.txt | head | cut -f 1-10| column -t
+cut -f 1,3,4,16- joined\_header\_teosinte\_genotype\_snp.txt | head | cut -f 1-10| column -t
 
-cut -f 1,3,4,16- joined_header_teosinte_genotype_snp.txt > reordered_teosinte_genotype_snp.txt
+cut -f 1,3,4,16- joined\_header\_teosinte\_genotype\_snp.txt > reordered\_teosinte\_genotype\_snp.txt
 
 #### How many SNPs are on each teosinte chromosome
-cut -f 2 reordered_teosinte_genotype_snp.txt |sort -n | uniq -c
+cut -f 2 reordered\_teosinte\_genotype\_snp.txt |sort -n | uniq -c
 
-awk '$2 == 1' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_1.txt
+awk '$2 == 1' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_1.txt
 
-cat teosinte_chromosome_1.txt |head|cut -f 1-10
+cat teosinte\_chromosome\_1.txt |head|cut -f 1-10
 
-cut -f 2 teosinte_chromosome_1.txt| sort| uniq -c
+cut -f 2 teosinte\_chromosome\_1.txt| sort| uniq -c
 
-awk '$2 == 2' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_2.txt
+awk '$2 == 2' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_2.txt
 
-awk '$2 == 3' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_3.txt
+awk '$2 == 3' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_3.txt
 
-awk '$2 == 4' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_4.txt
+awk '$2 == 4' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_4.txt
 
-awk '$2 == 5' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_5.txt
+awk '$2 == 5' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_5.txt
 
-awk '$2 == 6' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_6.txt
+awk '$2 == 6' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_6.txt
 
-awk '$2 == 7' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_7.txt
+awk '$2 == 7' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_7.txt
 
-awk '$2 == 8' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_8.txt
+awk '$2 == 8' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_8.txt
 
-awk '$2 == 9' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_9.txt
+awk '$2 == 9' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_9.txt
 
-awk '$2 == 10' reordered_teosinte_genotype_snp.txt  > teosinte_chromosome_10.txt
+awk '$2 == 10' reordered\_teosinte\_genotype\_snp.txt  > teosinte\_chromosome\_10.txt
 
-cut -f 2 teosinte_chromosome_10.txt| sort| uniq -c
+cut -f 2 teosinte\_chromosome\_10.txt| sort| uniq -c
 
 ### Increasing position sort of teosinte chromosome SNPs
 
-sort -k3,3n teosinte_chromosome_1.txt|head| cut -f 1-3
+sort -k3,3n teosinte\_chromosome\_1.txt|head| cut -f 1-3
 
-sort -k3,3n teosinte_chromosome_1.txt >sorted_teosinte_chromosome_1.txt
+sort -k3,3n teosinte\_chromosome\_1.txt >sorted\_teosinte\_chromosome\_1.txt
 
-cat sorted_teosinte_chromosome_1.txt| head |cut -f 1-6|column -t        
-sort -k3,3n teosinte_chromosome_2.txt > sorted_teosinte_chromosome_2.txt
+cat sorted\_teosinte\_chromosome\_1.txt| head |cut -f 1-6|column -t        
+sort -k3,3n teosinte\_chromosome\_2.txt > sorted\_teosinte\_chromosome\_2.txt
 
-sort -k3,3n teosinte_chromosome_3.txt > sorted_teosinte_chromosome_3.txt
+sort -k3,3n teosinte\_chromosome\_3.txt > sorted\_teosinte\_chromosome\_3.txt
 
-sort -k3,3n teosinte_chromosome_4.txt > sorted_teosinte_chromosome_4.txt
+sort -k3,3n teosinte\_chromosome\_4.txt > sorted\_teosinte\_chromosome\_4.txt
 
-sort -k3,3n teosinte_chromosome_5.txt > sorted_teosinte_chromosome_5.txt
+sort -k3,3n teosinte\_chromosome\_5.txt > sorted\_teosinte\_chromosome\_5.txt
 
-sort -k3,3n teosinte_chromosome_6.txt > sorted_teosinte_chromosome_6.txt
+sort -k3,3n teosinte\_chromosome\_6.txt > sorted\_teosinte\_chromosome\_6.txt
 
-sort -k3,3n teosinte_chromosome_7.txt > sorted_teosinte_chromosome_7.txt
+sort -k3,3n teosinte\_chromosome\_7.txt > sorted\_teosinte\_chromosome\_7.txt
 
-sort -k3,3n teosinte_chromosome_8.txt > sorted_teosinte_chromosome_8.txt
+sort -k3,3n teosinte\_chromosome\_8.txt > sorted\_teosinte\_chromosome\_8.txt
 
-sort -k3,3n teosinte_chromosome_9.txt > sorted_teosinte_chromosome_9.txt
+sort -k3,3n teosinte\_chromosome\_9.txt > sorted\_teosinte\_chromosome\_9.txt
 
-sort -k3,3n teosinte_chromosome_10.txt > sorted_teosinte_chromosome_10.txt
+sort -k3,3n teosinte\_chromosome\_10.txt > sorted\_teosinte\_chromosome\_10.txt
 
 ###Decreasing position order and replace ‘?’ with ‘-‘
 
-sort -k3,3nr teosinte_chromosome_10.txt | head| cut -f 1-10
+sort -k3,3nr teosinte\_chromosome\_10.txt | head| cut -f 1-10
 
-sort -k3,3nr teosinte_chromosome_10.txt| sed 's/?/-/g'| head| cut -f 1-10
+sort -k3,3nr teosinte\_chromosome\_10.txt| sed 's/?/-/g'| head| cut -f 1-10
 
-sort -k3,3nr teosinte_chromosome_10.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_10.txt
+sort -k3,3nr teosinte\_chromosome\_10.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_10.txt
 
-sort -k3,3nr teosinte_chromosome_9.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_9.txt
+sort -k3,3nr teosinte\_chromosome\_9.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_9.txt
 
-sort -k3,3nr teosinte_chromosome_8.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_8.txt
+sort -k3,3nr teosinte\_chromosome\_8.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_8.txt
 
-sort -k3,3nr teosinte_chromosome_7.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_7.txt
+sort -k3,3nr teosinte\_chromosome\_7.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_7.txt
 
-sort -k3,3nr teosinte_chromosome_7.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_6.txt
+sort -k3,3nr teosinte\_chromosome\_7.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_6.txt
 
-sort -k3,3nr teosinte_chromosome_6.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_6.txt
+sort -k3,3nr teosinte\_chromosome\_6.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_6.txt
 
-sort -k3,3nr teosinte_chromosome_5.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_5.txt
+sort -k3,3nr teosinte\_chromosome\_5.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_5.txt
 
-sort -k3,3nr teosinte_chromosome_4.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_4.txt
+sort -k3,3nr teosinte\_chromosome\_4.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_4.txt
 
-sort -k3,3nr teosinte_chromosome_3.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_3.txt
+sort -k3,3nr teosinte\_chromosome\_3.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_3.txt
 
-sort -k3,3nr teosinte_chromosome_2.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_2.txt
+sort -k3,3nr teosinte\_chromosome\_2.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_2.txt
 
-sort -k3,3nr teosinte_chromosome_1.txt| sed 's/?/-/g'> reverse_teosinte_chromosome_1.txt
+sort -k3,3nr teosinte\_chromosome\_1.txt| sed 's/?/-/g'> reverse\_teosinte\_chromosome\_1.txt
 
 
 
